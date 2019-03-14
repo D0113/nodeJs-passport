@@ -1,0 +1,85 @@
+body, html {
+    height: 100vh;
+    font-family: raleway, sans-serif;
+    margin: 0;
+  }
+
+.container {
+    background-image: url("/images/ZeroTwo.jpg");
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;   
+}
+
+.title {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #ffeaf1;
+    font-size: 65px;
+    font-weight: bold;
+    font-stretch: normal;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.12),
+    0 2px 4px 0 rgba(0,0,0,0.08);
+    
+}
+.btn {
+    width: auto;
+    position: relative;
+    background-color: #9b2847;
+    color: #fff;
+    padding: 7px 35px;
+    margin: 0;
+    margin-bottom: 15px;
+    font-weight: normal;
+    font-size: 13px;
+    display: inline-block;
+    text-align: center;
+    line-height: 21px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    vertical-align: middle;
+    transition: 0.3s;
+    border-radius: 2px;
+    outline: none;
+}
+.btn:hover {
+    background-color: #ce325c;
+    transition: 0.1s;
+}
+
+.btn:active {
+    background-color: #9b2847;
+}
+
+.inputText {
+    border: 1px solid rgba(0,0,0,0.1);
+    color: #e490a5;
+    font-size: 12px;
+    outline: none;
+    padding: 5px;
+    line-height: 23px;
+    border-radius: 2px;
+    transition:  0.3s, border 0.3s;
+    max-width: 100%;
+    background-color: #00000038;
+    border-color: #9b2847 !important;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #af6f7f;
+    opacity: 1; /* Firefox */
+  }
+
+  .wrapper > .btn{
+    margin: 0;
+  }
