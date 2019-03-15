@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const passport = require('passport');
-const localStrategy = require('passport-local').Strategy;
+const localStrategy = require('passport-local').Strategy; // vua lam toi day thi buon ngu qua, tam phut 12.
 const port = 3000;
 
 app.set('views', './views');
