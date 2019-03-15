@@ -13,7 +13,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({ 
     secret: "ironman",
-    maxAge: 5000
+    maxAge: 6000 * 5
 }));
 
 app.use(passport.initialize());
@@ -29,8 +29,7 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
-    // res.render('home');
-    res.send('Login successfuly');
+    res.render('home');
 })
 
 app.get('/club', (req, res) => {
@@ -69,7 +68,6 @@ passport.deserializeUser((name, done) => {
     fs.readFile('./userDB.json', (err, data) => {
         const db = JSON.parse(data);
         const userRecord = db.find(user => user.username === name);
-
         if (userRecord) {
             return done(null, userRecord);
         } else {
