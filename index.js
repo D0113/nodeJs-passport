@@ -1,14 +1,20 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
+const session = require('express-session');
 const passport = require('passport');
-const localStrategy = require('passport-local').Strategy; 
+const LocalStrategy = require('passport-local').Strategy; 
 const fs = require('fs');
 const port = 3000;
 
 app.set('views', './views');
 app.set('view engine', 'ejs');
 
-app.set(express.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(session({ 
+    secret: "ironman",
+    maxAge: 5000
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -22,27 +28,54 @@ app.get('/login', (req, res) => {
     res.render('login');
 });
 
-app.post('/login', (req, res) => {
-    passport.authenticate('local', { failureRedirect: '/login' });
-});
+app.get('/home', (req, res) => {
+    // res.render('home');
+    res.send('Login successfuly');
+})
 
-passport.use(new localStrategy(
+app.get('/club', (req, res) => {
+    if (req.isAuthenticated()) {
+        res.send('Welcome');
+    } else {
+        res.send('login????????');
+    }
+})
+
+app.post('/login', 
+    passport.authenticate('local', { successRedirect: '/home', failureRedirect: '/login' })
+);
+
+passport.use(new LocalStrategy(
     (username, password, done) => {
-        fs.readFileSync('./userDB.json', (err, data) => {
+        fs.readFile('./userDB.json', (err, data) => {
             const db = JSON.parse(data);
             const userRecord = db.find(user => user.username === username);
             if (userRecord) {
                 if (userRecord.password === password) {
                     return done(null, userRecord); 
                 }
-            }
+            }        
             return done(null, false);
         });
+
     }
 ));
 
 passport.serializeUser((user, done) => {
     done(null, user.username);
+});
+
+passport.deserializeUser((name, done) => {
+    fs.readFile('./userDB.json', (err, data) => {
+        const db = JSON.parse(data);
+        const userRecord = db.find(user => user.username === name);
+
+        if (userRecord) {
+            return done(null, userRecord);
+        } else {
+            return done(null, false);
+        }
+    });
 });
 
 app.listen(port, () => {
