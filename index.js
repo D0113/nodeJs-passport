@@ -29,7 +29,9 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
-    res.render('home');
+    res.render('home', {
+        name: req.user.username
+    });
 })
 
 app.get('/club', (req, res) => {
