@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
+const passportFb = require('passport-facebook').Strategy;
 const LocalStrategy = require('passport-local').Strategy; 
 const fs = require('fs');
 const port = 3000;
@@ -61,6 +62,26 @@ passport.use(new LocalStrategy(
 
     }
 ));
+
+app.get('/auth/facebook', 
+    passport.authenticate('facebook')
+);
+
+app.get('/auth/facebook/callback', 
+    passport.authenticate('facebook', {failureRedirect: '/', successRedirect: '/home'})
+);
+
+passport.use(new passportFb(
+    {
+    clientID: "",
+    clientSecret: "",
+    callbackURL: ""
+    },
+    (accessToken, refeshToken, profile, done) => {
+        console.log(profile);
+    }
+));
+
 
 passport.serializeUser((user, done) => {
     done(null, user.username);
