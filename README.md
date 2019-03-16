@@ -1,2 +1,0 @@
-# nodeJs-passport
-Learn passport.
