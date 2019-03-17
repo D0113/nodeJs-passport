@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -5,12 +7,13 @@ const session = require('express-session');
 
 // route
 const indexRoute = require('./routes/index.route');
+const authRoute = require('./routes/auth.route');
 // passport
 const passport = require('passport');
 const passportFb = require('passport-facebook').Strategy;
 const LocalStrategy = require('passport-local').Strategy; 
 
-const fs = require('fs');
+// const fs = require('fs');
 
 //
 const user = require('./models/user.model');
@@ -26,7 +29,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 //session
 app.use(session({ 
-    secret: "ironman",
+    secret: process.env.SESSION_SECRET,
     maxAge: 6000 * 5
 }));
 
@@ -65,18 +68,34 @@ passport.use(new LocalStrategy(
           });
     }
 ));
-
 //FB passport
-// passport.use(new passportFb(
-//     {
-//     clientID: "",
-//     clientSecret: "",
-//     callbackURL: ""
-//     },
-//     (accessToken, refeshToken, profile, done) => {
-//         console.log(profile);
-//     }
-// ));
+passport.use(new passportFb(
+    {
+    clientID: process.env.CLIENT_ID,
+    clientSecret:  process.env.CLIENT_SECRET,
+    callbackURL: `http://localhost:3000/auth/facebook/callback`,
+    profileFields: ['email', 'gender', 'locale', 'displayName']
+    },
+    (accessToken, refeshToken, profile, done) => {
+        user.findOne({
+            where: {
+                username: profile._json.name
+            },
+            raw: true
+          }).then(userResult => {
+              if (userResult) {            
+                return done(null, userResult); 
+              }
+             
+              user.create({
+                    username: profile._json.name,
+                    password: profile._json.id
+                }).then(newUser => {  
+                    return done(null, newUser);
+                });
+          });
+    }
+));
 
 // serializeUser to send session
 passport.serializeUser((user, done) => {
@@ -109,6 +128,7 @@ passport.deserializeUser((name, done) => {
 });
 
 app.use('/', indexRoute);
+app.use('/auth', authRoute);
 
 app.listen(port, () => {
     console.log('Server listen port', port);
